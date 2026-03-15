@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analitik - F1 Haberleri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; }
+        header { background: #e10600; padding: 20px 40px; display: flex; align-items: center; gap: 16px; }
+        header h1 { font-size: 28px; font-weight: 800; letter-spacing: 2px; }
+        header span { font-size: 13px; opacity: 0.8; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .haberler { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .haber-kart { background: #1a1a1a; border-radius: 12px; overflow: hidden; transition: transform 0.2s; border: 1px solid #2a2a2a; }
+        .haber-kart:hover { transform: translateY(-4px); border-color: #e10600; }
+        .haber-icerik { padding: 20px; }
+        .haber-kaynak { font-size: 11px; color: #e10600; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .haber-baslik { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+        .haber-ozet { font-size: 13px; color: #aaa; line-height: 1.7; margin-bottom: 16px; }
+        .haber-footer { display: flex; justify-content: space-between; align-items: center; }
+        .haber-tarih { font-size: 11px; color: #666; }
+        .haber-link { font-size: 12px; color: #e10600; text-decoration: none; font-weight: 600; }
+        .haber-link:hover { text-decoration: underline; }
+        .yukluyor { text-align: center; padding: 60px; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚡ ANALİTİK</h1>
+        <span>F1 Haber Merkezi</span>
+    </header>
+    <div class="container">
+        <div class="haberler" id="haberler">
+            <div class="yukluyor">Haberler yükleniyor...</div>
+        </div>
+    </div>
+    <script>
+        fetch('haberler.json')
+            .then(r => r.json())
+            .then(haberler => {
+                const container = document.getElementById('haberler');
+                if (!haberler.length) {
+                    container.innerHTML = '<div class="yukluyor">Henüz haber yok.</div>';
+                    return;
+                }
+                container.innerHTML = haberler.map(h => `
+                    <div class="haber-kart">
+                        <div class="haber-icerik">
+                            <div class="haber-kaynak">${h.kaynak}</div>
+                            <div class="haber-baslik">${h.baslik}</div>
+                            <div class="haber-ozet">${h.ozet}</div>
+                            <div class="haber-footer">
+                                <span class="haber-tarih">${h.tarih}</span>
+                                <a href="${h.link}" target="_blank" class="haber-link">Devamını oku →</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                document.getElementById('haberler').innerHTML = '<div class="yukluyor">Haberler yüklenemedi.</div>';
+            });
+    </script>
+</body>
+</html>
